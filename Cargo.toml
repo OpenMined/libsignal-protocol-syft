@@ -11,6 +11,8 @@ authors = ["Signal Messenger LLC"]
 license = "AGPL-3.0-only"
 edition = "2024"
 rust-version = "1.85"
+repository = "https://github.com/OpenMined/libsignal-protocol-syft"
+homepage = "https://github.com/OpenMined/libsignal-protocol-syft"
 
 [workspace.lints.clippy]
 cast_possible_truncation = "warn"

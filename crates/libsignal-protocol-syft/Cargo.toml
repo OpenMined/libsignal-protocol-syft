@@ -11,6 +11,8 @@ authors.workspace = true
 license.workspace = true
 edition = "2024"
 rust-version = "1.85"
+repository.workspace = true
+homepage.workspace = true
 
 [lints]
 workspace = true
@@ -42,7 +44,7 @@ rand = { version = "0.9" }
 rayon = { version = "1.8.0" }
 serde = { version = "1.0.203", features = ["derive"] }
 sha2 = { version = "0.10" }
-spqr = { git = "https://github.com/signalapp/SparsePostQuantumRatchet.git", tag = "v1.2.0" }
+spqr = { version = "1.2.0", git = "https://github.com/signalapp/SparsePostQuantumRatchet.git", tag = "v1.2.0" }
 subtle = { version = "2.6" }
 thiserror = { version = "2.0.11" }
 uuid = { version = "1.5" }
