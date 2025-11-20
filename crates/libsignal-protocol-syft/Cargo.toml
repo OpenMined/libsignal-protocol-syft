@@ -9,10 +9,10 @@ name = "libsignal-protocol-syft"
 version = "0.85.3-beta.1"
 authors.workspace = true
 license.workspace = true
-edition = "2024"
-rust-version = "1.85"
 repository.workspace = true
 homepage.workspace = true
+edition = "2024"
+rust-version = "1.85"
 
 [lints]
 workspace = true
