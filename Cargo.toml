@@ -1,0 +1,13 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/libsignal-core-syft",
+    "crates/signal-crypto-syft",
+    "crates/libsignal-protocol-syft",
+]
+
+[workspace.package]
+authors = ["Signal Messenger LLC"]
+license = "AGPL-3.0-only"
+edition = "2024"
+rust-version = "1.85"
