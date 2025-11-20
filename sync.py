@@ -117,6 +117,14 @@ def patch_manifest(
             1,
         )
 
+    # Add repository and homepage if not present
+    if 'repository.workspace = true' not in text and 'repository = ' not in text:
+        text = replace_first(
+            r'^edition\s*=',
+            'repository.workspace = true\nhomepage.workspace = true\nedition =',
+            text
+        )
+
     for dep, alias in local_deps:
         pattern = rf'{dep}\s*=\s*\{{[^}}]*\}}'
         replacement = (
@@ -137,6 +145,12 @@ def patch_manifest(
             return f"{match.group(1)}{insert}{match.group(2)}"
 
         text = re.sub(pattern, repl, text)
+
+    # Fix spqr dependency - add version requirement for publishing
+    spqr_pattern = r'(spqr\s*=\s*\{\s*)(git\s*=\s*"[^"]+",\s*tag\s*=\s*"v([^"]+)")'
+    def add_spqr_version(match: re.Match[str]) -> str:
+        return f'{match.group(1)}version = "{match.group(3)}", {match.group(2)}'
+    text = re.sub(spqr_pattern, add_spqr_version, text)
 
     manifest.write_text(text)
 
