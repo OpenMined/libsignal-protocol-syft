@@ -126,9 +126,10 @@ def patch_manifest(
 
     # Add repository and homepage if not present
     if 'repository.workspace = true' not in text and 'repository = ' not in text:
+        # Insert after version line
         text = replace_first(
-            r'^edition\s*=',
-            'repository.workspace = true\nhomepage.workspace = true\nedition =',
+            r'^version\s*=\s*".*"$',
+            lambda m: f'{m.group(0)}\nrepository.workspace = true\nhomepage.workspace = true',
             text
         )
 
