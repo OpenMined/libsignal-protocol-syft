@@ -13,7 +13,7 @@ import re
 import shutil
 from pathlib import Path
 
-VERSION = "0.85.3"
+VERSION = "0.85.3-beta.1"
 
 CRATES = [
     {
@@ -145,7 +145,7 @@ def main() -> None:
             spec["locals"],
         )
 
-    print("✓ Synced libsignal crates:")
+    print("Synced libsignal crates:")
     for spec in CRATES:
         print(f"  - {spec['dest']}")
 
