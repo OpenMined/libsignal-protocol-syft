@@ -123,16 +123,21 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add sync.py crates/*/Cargo.toml
-          git commit -m "Bump version to ${{ steps.version.outputs.VERSION }}"
-          git push
+          git add sync.py crates/*/Cargo.toml Cargo.lock
+          git commit -m "Bump version to ${{ steps.version.outputs.VERSION }}" || echo "No changes to commit"
+          git push || echo "Nothing to push"
 
       - name: Set up Rust
         uses: dtolnay/rust-toolchain@stable
 
+      - name: Check working directory status
+        run: |
+          echo "Working directory status before publish:"
+          git status --short
+
       - name: Publish spqr-syft
         working-directory: crates/spqr-syft
-        run: cargo publish --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
+        run: cargo publish --allow-dirty --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
 
@@ -153,7 +158,7 @@ jobs:
 
       - name: Publish libsignal-core-syft
         working-directory: crates/libsignal-core-syft
-        run: cargo publish --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
+        run: cargo publish --allow-dirty --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
 
@@ -174,7 +179,7 @@ jobs:
 
       - name: Publish signal-crypto-syft
         working-directory: crates/signal-crypto-syft
-        run: cargo publish --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
+        run: cargo publish --allow-dirty --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
 
@@ -195,6 +200,6 @@ jobs:
 
       - name: Publish libsignal-protocol-syft
         working-directory: crates/libsignal-protocol-syft
-        run: cargo publish --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
+        run: cargo publish --allow-dirty --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
