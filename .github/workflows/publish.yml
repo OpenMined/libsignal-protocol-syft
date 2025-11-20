@@ -28,6 +28,11 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Clone spqr dependency
+        run: |
+          mkdir -p third_party/libsignal/third_party
+          git clone --depth 1 --branch v1.2.0 https://github.com/signalapp/SparsePostQuantumRatchet.git third_party/libsignal/third_party/spqr
+
       - name: Install protoc
         uses: arduino/setup-protoc@v2
         with:
@@ -63,11 +68,11 @@ jobs:
           bump_type = "${{ inputs.bump }}"
           remove_beta = "${{ inputs.remove_beta }}" == "true"
 
-          if remove_beta and beta_num is not None:
-              # Remove beta suffix
-              new_version = base
-          elif bump_type == 'beta':
-              if beta_num is None:
+          if bump_type == 'beta':
+              if remove_beta and beta_num is not None:
+                  # Remove beta suffix only
+                  new_version = base
+              elif beta_num is None:
                   # Add beta.1 to current version
                   new_version = f"{base}-beta.1"
               else:
@@ -76,20 +81,20 @@ jobs:
           elif bump_type == 'patch':
               patch += 1
               new_version = f"{major}.{minor}.{patch}"
-              if not remove_beta and beta_num is not None:
+              if not remove_beta:
                   new_version += "-beta.1"
           elif bump_type == 'minor':
               minor += 1
               patch = 0
               new_version = f"{major}.{minor}.{patch}"
-              if not remove_beta and beta_num is not None:
+              if not remove_beta:
                   new_version += "-beta.1"
           elif bump_type == 'major':
               major += 1
               minor = 0
               patch = 0
               new_version = f"{major}.{minor}.{patch}"
-              if not remove_beta and beta_num is not None:
+              if not remove_beta:
                   new_version += "-beta.1"
 
           print(f"New version: {new_version}")

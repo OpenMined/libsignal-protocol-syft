@@ -16,6 +16,11 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Clone spqr dependency
+        run: |
+          mkdir -p third_party/libsignal/third_party
+          git clone --depth 1 --branch v1.2.0 https://github.com/signalapp/SparsePostQuantumRatchet.git third_party/libsignal/third_party/spqr
+
       - name: Install protoc
         uses: arduino/setup-protoc@v2
         with:
