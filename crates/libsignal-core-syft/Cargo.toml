@@ -6,7 +6,7 @@
 [package]
 description = "Vendored libsignal core crate for syft"
 name = "libsignal-core-syft"
-version = "0.85.3-beta.3"
+version = "0.85.3-beta.4"
 repository.workspace = true
 homepage.workspace = true
 authors.workspace = true
