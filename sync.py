@@ -13,7 +13,7 @@ import re
 import shutil
 from pathlib import Path
 
-VERSION = "0.85.3-beta.1"
+VERSION = "0.85.3-beta.2"
 
 CRATES = [
     {
