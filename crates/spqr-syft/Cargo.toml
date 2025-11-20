@@ -1,7 +1,7 @@
 [package]
 description = "Vendored spqr crate for syft"
 name = "spqr-syft"
-version = "0.85.3-beta.2"
+version = "0.85.3-beta.3"
 repository.workspace = true
 homepage.workspace = true
 edition = "2021"
