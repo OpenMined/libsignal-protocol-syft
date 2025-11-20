@@ -12,32 +12,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: Install protoc
         uses: arduino/setup-protoc@v2
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Sync vendored crates
+        run: python3 sync.py
+
       - name: Set up Rust
         uses: dtolnay/rust-toolchain@stable
 
       - name: Publish libsignal-core-syft
-        run: |
-          cd vendor/libsignal-protocol-syft/crates/libsignal-core-syft
-          cargo publish --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
+        working-directory: crates/libsignal-core-syft
+        run: cargo publish --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
 
       - name: Publish signal-crypto-syft
-        run: |
-          cd vendor/libsignal-protocol-syft/crates/signal-crypto-syft
-          cargo publish --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
+        working-directory: crates/signal-crypto-syft
+        run: cargo publish --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
 
       - name: Publish libsignal-protocol-syft
-        run: |
-          cd vendor/libsignal-protocol-syft/crates/libsignal-protocol-syft
-          cargo publish --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
+        working-directory: crates/libsignal-protocol-syft
+        run: cargo publish --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
