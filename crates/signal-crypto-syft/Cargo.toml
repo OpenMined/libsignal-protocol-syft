@@ -6,7 +6,7 @@
 [package]
 description = "Vendored libsignal crypto crate for syft"
 name = "signal-crypto-syft"
-version = "0.85.3-beta.2"
+version = "0.85.3-beta.3"
 repository.workspace = true
 homepage.workspace = true
 authors.workspace = true
@@ -18,7 +18,7 @@ rust-version = "1.85"
 workspace = true
 
 [dependencies]
-libsignal-core = { version = "0.85.3-beta.2", package = "libsignal-core-syft", path = "../libsignal-core-syft" }
+libsignal-core = { version = "0.85.3-beta.3", package = "libsignal-core-syft", path = "../libsignal-core-syft" }
 
 aes = { version = "0.8.3", features = ["zeroize"] }
 cbc = { version = "0.1.2", features = ["std", "zeroize"] }
