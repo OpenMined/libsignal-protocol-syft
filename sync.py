@@ -145,7 +145,7 @@ def main() -> None:
             spec["locals"],
         )
 
-    print("✓ Synced libsignal crates:")
+    print("Synced libsignal crates:")
     for spec in CRATES:
         print(f"  - {spec['dest']}")
 
