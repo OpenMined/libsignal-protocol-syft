@@ -29,8 +29,6 @@ jobs:
 
       - name: Validate crates
         run: |
-          cargo publish --dry-run --locked --allow-dirty --manifest-path crates/libsignal-core-syft/Cargo.toml
-          # Dry-running publish for crates that depend on unpublished siblings fails
-          # dependency verification. Use --no-verify to skip the registry check.
-          cargo publish --dry-run --locked --allow-dirty --no-verify --manifest-path crates/signal-crypto-syft/Cargo.toml
-          cargo publish --dry-run --locked --allow-dirty --no-verify --manifest-path crates/libsignal-protocol-syft/Cargo.toml
+          cargo package --locked --allow-dirty --manifest-path crates/libsignal-core-syft/Cargo.toml
+          cargo package --locked --allow-dirty --manifest-path crates/signal-crypto-syft/Cargo.toml
+          cargo package --locked --allow-dirty --manifest-path crates/libsignal-protocol-syft/Cargo.toml
