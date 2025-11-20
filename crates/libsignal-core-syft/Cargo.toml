@@ -4,9 +4,9 @@
 #
 
 [package]
+description = "Vendored libsignal core crate for syft"
 name = "libsignal-core-syft"
 version = "0.85.3-beta.1"
-description = "Vendored libsignal core crate for syft"
 authors.workspace = true
 license.workspace = true
 edition = "2024"

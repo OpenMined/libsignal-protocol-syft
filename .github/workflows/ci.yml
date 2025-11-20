@@ -29,6 +29,6 @@ jobs:
 
       - name: Validate crates
         run: |
-          cargo publish --dry-run --locked --manifest-path crates/libsignal-core-syft/Cargo.toml
-          cargo publish --dry-run --locked --manifest-path crates/signal-crypto-syft/Cargo.toml
-          cargo publish --dry-run --locked --manifest-path crates/libsignal-protocol-syft/Cargo.toml
+          cargo publish --dry-run --locked --allow-dirty --manifest-path crates/libsignal-core-syft/Cargo.toml
+          cargo publish --dry-run --locked --allow-dirty --manifest-path crates/signal-crypto-syft/Cargo.toml
+          cargo publish --dry-run --locked --allow-dirty --manifest-path crates/libsignal-protocol-syft/Cargo.toml

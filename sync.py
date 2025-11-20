@@ -19,16 +19,19 @@ CRATES = [
     {
         "source": "rust/core",
         "dest": "libsignal-core-syft",
+        "description": "Vendored libsignal core crate for syft",
         "locals": [],
     },
     {
         "source": "rust/crypto",
         "dest": "signal-crypto-syft",
+        "description": "Vendored libsignal crypto crate for syft",
         "locals": [("libsignal-core", "libsignal-core-syft")],
     },
     {
         "source": "rust/protocol",
         "dest": "libsignal-protocol-syft",
+        "description": "Vendored libsignal protocol crate for syft",
         "locals": [
             ("libsignal-core", "libsignal-core-syft"),
             ("signal-crypto", "signal-crypto-syft"),
@@ -96,12 +99,23 @@ def replace_first(pattern: str, repl: str, text: str) -> str:
 def patch_manifest(
     manifest: Path,
     crate_name: str,
+    description: str,
     workspace_deps: dict[str, str],
     local_deps: list[tuple[str, str]],
 ) -> None:
     text = manifest.read_text()
     text = replace_first(r'^name\s*=\s*".*"$', f'name = "{crate_name}"', text)
     text = replace_first(r'^version\s*=\s*".*"$', f'version = "{VERSION}"', text)
+    if 'description = "' in text:
+        text = replace_first(
+            r'^description\s*=\s*".*"$', f'description = "{description}"', text
+        )
+    else:
+        text = text.replace(
+            '[package]',
+            f'[package]\ndescription = "{description}"',
+            1,
+        )
 
     for dep, alias in local_deps:
         pattern = rf'{dep}\s*=\s*\{{[^}}]*\}}'
@@ -141,6 +155,7 @@ def main() -> None:
         patch_manifest(
             dest / "Cargo.toml",
             spec["dest"],
+            spec["description"],
             workspace_deps,
             spec["locals"],
         )

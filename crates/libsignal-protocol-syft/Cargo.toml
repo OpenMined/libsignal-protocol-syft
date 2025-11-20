@@ -4,6 +4,7 @@
 #
 
 [package]
+description = "Vendored libsignal protocol crate for syft"
 name = "libsignal-protocol-syft"
 version = "0.85.3-beta.1"
 authors.workspace = true
