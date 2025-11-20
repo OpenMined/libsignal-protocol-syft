@@ -27,8 +27,8 @@ jobs:
       - name: Sync vendored crates
         run: python3 sync.py
 
-      - name: Validate crates
-        run: |
-          cargo package --locked --allow-dirty --manifest-path crates/libsignal-core-syft/Cargo.toml
-          cargo package --locked --allow-dirty --manifest-path crates/signal-crypto-syft/Cargo.toml
-          cargo package --locked --allow-dirty --manifest-path crates/libsignal-protocol-syft/Cargo.toml
+      - name: Build
+        run: cargo build --workspace --locked
+
+      - name: Test
+        run: cargo test --workspace --locked

@@ -28,11 +28,39 @@ jobs:
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
 
+      - name: Wait for libsignal-core-syft to be available
+        run: |
+          echo "Waiting for libsignal-core-syft@0.85.3-beta.1 to appear on crates.io..."
+          for i in {1..30}; do
+            if cargo search libsignal-core-syft --limit 1 | grep -q "0.85.3-beta.1"; then
+              echo "✓ Found libsignal-core-syft@0.85.3-beta.1"
+              exit 0
+            fi
+            echo "Attempt $i/30: Not found yet, waiting 10s..."
+            sleep 10
+          done
+          echo "✗ Timeout waiting for libsignal-core-syft"
+          exit 1
+
       - name: Publish signal-crypto-syft
         working-directory: crates/signal-crypto-syft
         run: cargo publish --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+
+      - name: Wait for signal-crypto-syft to be available
+        run: |
+          echo "Waiting for signal-crypto-syft@0.85.3-beta.1 to appear on crates.io..."
+          for i in {1..30}; do
+            if cargo search signal-crypto-syft --limit 1 | grep -q "0.85.3-beta.1"; then
+              echo "✓ Found signal-crypto-syft@0.85.3-beta.1"
+              exit 0
+            fi
+            echo "Attempt $i/30: Not found yet, waiting 10s..."
+            sleep 10
+          done
+          echo "✗ Timeout waiting for signal-crypto-syft"
+          exit 1
 
       - name: Publish libsignal-protocol-syft
         working-directory: crates/libsignal-protocol-syft
