@@ -1,8 +1,6 @@
-name: CI
+name: PR CI
 
 on:
-  push:
-    branches: [main]
   pull_request:
     branches: [main]
 
@@ -25,20 +23,9 @@ jobs:
 
       - name: Set up Rust
         uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: |
-            x86_64-unknown-linux-gnu
-            aarch64-unknown-linux-gnu
-            x86_64-apple-darwin
-            aarch64-apple-darwin
-            x86_64-pc-windows-msvc
-            aarch64-pc-windows-msvc
 
       - name: Sync vendored crates
         run: python3 sync.py
 
-      - name: Build core and protocol
-        run: |
-          cargo check -p libsignal-core-syft
-          cargo check -p signal-crypto-syft
-          cargo check -p libsignal-protocol-syft
+      - name: Build
+        run: cargo build --workspace
