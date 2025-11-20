@@ -2,6 +2,23 @@ name: Publish
 
 on:
   workflow_dispatch:
+    inputs:
+      bump:
+        description: 'Version bump type'
+        required: true
+        type: choice
+        options:
+          - none
+          - beta
+          - patch
+          - minor
+          - major
+        default: 'beta'
+      remove_beta:
+        description: 'Remove beta suffix (e.g., 0.85.3-beta.2 → 0.85.3)'
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   publish:
@@ -16,11 +33,78 @@ jobs:
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Bump version
+        if: inputs.bump != 'none'
+        run: |
+          python3 << 'EOF'
+          import re
+          from pathlib import Path
+
+          sync_file = Path('sync.py')
+          content = sync_file.read_text()
+
+          # Extract current version
+          match = re.search(r'VERSION = "(.+?)"', content)
+          current = match.group(1)
+          print(f"Current version: {current}")
+
+          # Parse version
+          if '-beta.' in current:
+              base, beta_num = current.rsplit('-beta.', 1)
+              beta_num = int(beta_num)
+          else:
+              base = current
+              beta_num = None
+
+          parts = base.split('.')
+          major, minor, patch = int(parts[0]), int(parts[1]), int(parts[2])
+
+          # Apply bump
+          bump_type = "${{ inputs.bump }}"
+          remove_beta = "${{ inputs.remove_beta }}" == "true"
+
+          if remove_beta and beta_num is not None:
+              # Remove beta suffix
+              new_version = base
+          elif bump_type == 'beta':
+              if beta_num is None:
+                  # Add beta.1 to current version
+                  new_version = f"{base}-beta.1"
+              else:
+                  # Increment beta number
+                  new_version = f"{base}-beta.{beta_num + 1}"
+          elif bump_type == 'patch':
+              patch += 1
+              new_version = f"{major}.{minor}.{patch}"
+              if not remove_beta and beta_num is not None:
+                  new_version += "-beta.1"
+          elif bump_type == 'minor':
+              minor += 1
+              patch = 0
+              new_version = f"{major}.{minor}.{patch}"
+              if not remove_beta and beta_num is not None:
+                  new_version += "-beta.1"
+          elif bump_type == 'major':
+              major += 1
+              minor = 0
+              patch = 0
+              new_version = f"{major}.{minor}.{patch}"
+              if not remove_beta and beta_num is not None:
+                  new_version += "-beta.1"
+
+          print(f"New version: {new_version}")
+
+          # Update sync.py
+          new_content = re.sub(
+              r'VERSION = ".+?"',
+              f'VERSION = "{new_version}"',
+              content
+          )
+          sync_file.write_text(new_content)
+          EOF
+
       - name: Sync vendored crates
         run: python3 sync.py
-
-      - name: Set up Rust
-        uses: dtolnay/rust-toolchain@stable
 
       - name: Get version from sync.py
         id: version
@@ -28,6 +112,39 @@ jobs:
           VERSION=$(python3 -c "import re; content = open('sync.py').read(); print(re.search(r'VERSION = \"(.+?)\"', content).group(1))")
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
           echo "Publishing version: $VERSION"
+
+      - name: Commit version bump
+        if: inputs.bump != 'none'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add sync.py crates/*/Cargo.toml
+          git commit -m "Bump version to ${{ steps.version.outputs.VERSION }}"
+          git push
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Publish spqr-syft
+        working-directory: crates/spqr-syft
+        run: cargo publish --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+
+      - name: Wait for spqr-syft to be available
+        run: |
+          VERSION="${{ steps.version.outputs.VERSION }}"
+          echo "Waiting for spqr-syft@$VERSION to appear on crates.io..."
+          for i in {1..30}; do
+            if cargo search spqr-syft --limit 1 | grep -q "$VERSION"; then
+              echo "✓ Found spqr-syft@$VERSION"
+              exit 0
+            fi
+            echo "Attempt $i/30: Not found yet, waiting 10s..."
+            sleep 10
+          done
+          echo "✗ Timeout waiting for spqr-syft"
+          exit 1
 
       - name: Publish libsignal-core-syft
         working-directory: crates/libsignal-core-syft

@@ -17,6 +17,12 @@ VERSION = "0.85.3-beta.2"
 
 CRATES = [
     {
+        "source": "third_party/spqr",
+        "dest": "spqr-syft",
+        "description": "Vendored spqr crate for syft",
+        "locals": [],
+    },
+    {
         "source": "rust/core",
         "dest": "libsignal-core-syft",
         "description": "Vendored libsignal core crate for syft",
@@ -35,9 +41,10 @@ CRATES = [
         "locals": [
             ("libsignal-core", "libsignal-core-syft"),
             ("signal-crypto", "signal-crypto-syft"),
+            ("spqr", "spqr-syft"),
         ],
     },
-]  # order matters (core -> crypto -> protocol)
+]  # order matters (spqr -> core -> crypto -> protocol)
 
 
 def parse_workspace_dependencies(path: Path) -> dict[str, str]:
@@ -145,12 +152,6 @@ def patch_manifest(
             return f"{match.group(1)}{insert}{match.group(2)}"
 
         text = re.sub(pattern, repl, text)
-
-    # Fix spqr dependency - add version requirement for publishing
-    spqr_pattern = r'(spqr\s*=\s*\{\s*)(git\s*=\s*"[^"]+",\s*tag\s*=\s*"v([^"]+)")'
-    def add_spqr_version(match: re.Match[str]) -> str:
-        return f'{match.group(1)}version = "{match.group(3)}", {match.group(2)}'
-    text = re.sub(spqr_pattern, add_spqr_version, text)
 
     manifest.write_text(text)
 
