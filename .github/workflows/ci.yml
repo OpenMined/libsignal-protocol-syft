@@ -28,7 +28,7 @@ jobs:
         run: python3 sync.py
 
       - name: Build
-        run: cargo build --workspace --locked
+        run: cargo build --workspace
 
       - name: Test
-        run: cargo test --workspace --locked
+        run: cargo test --workspace
