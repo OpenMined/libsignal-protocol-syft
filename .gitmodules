@@ -1,3 +1,6 @@
 [submodule "third_party/libsignal"]
 	path = third_party/libsignal
 	url = https://github.com/signalapp/libsignal.git
+[submodule "third_party/spqr"]
+	path = third_party/spqr
+	url = https://github.com/signalapp/SparsePostQuantumRatchet.git
