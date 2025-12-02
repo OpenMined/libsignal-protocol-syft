@@ -17,7 +17,7 @@ VERSION = "0.85.3-beta.4"
 
 CRATES = [
     {
-        "source": "third_party/spqr",
+        "source": "../spqr",  # from third_party/spqr submodule
         "dest": "spqr-syft",
         "description": "Vendored spqr crate for syft",
         "locals": [],
@@ -96,7 +96,12 @@ def parse_workspace_dependencies(path: Path) -> dict[str, str]:
 def copy_crate(src: Path, dest: Path) -> None:
     if dest.exists():
         shutil.rmtree(dest)
-    shutil.copytree(src, dest)
+
+    # Exclude metadata files not needed in vendored crates
+    def ignore_patterns(dir, files):
+        return ['.git', '.github', '.gitignore', '.gitattributes']
+
+    shutil.copytree(src, dest, ignore=ignore_patterns)
 
 
 def replace_first(pattern: str, repl: str, text: str) -> str:
@@ -124,12 +129,17 @@ def patch_manifest(
             1,
         )
 
-    # Add repository and homepage if not present
-    if 'repository.workspace = true' not in text and 'repository = ' not in text:
-        # Insert after version line
+    # Replace workspace fields with concrete values (upstream workspace incomplete)
+    text = text.replace('repository.workspace = true', 'repository = "https://github.com/OpenMined/libsignal-protocol-syft"')
+    text = text.replace('homepage.workspace = true', 'homepage = "https://github.com/OpenMined/libsignal-protocol-syft"')
+    text = text.replace('authors.workspace = true', 'authors = ["Signal Messenger LLC"]')
+    text = text.replace('license.workspace = true', 'license = "AGPL-3.0-only"')
+
+    # Add repository and homepage if not present (required for publishing)
+    if 'repository = ' not in text:
         text = replace_first(
             r'^version\s*=\s*".*"$',
-            lambda m: f'{m.group(0)}\nrepository.workspace = true\nhomepage.workspace = true',
+            lambda m: f'{m.group(0)}\nrepository = "https://github.com/OpenMined/libsignal-protocol-syft"\nhomepage = "https://github.com/OpenMined/libsignal-protocol-syft"',
             text
         )
 
@@ -153,6 +163,9 @@ def patch_manifest(
             return f"{match.group(1)}{insert}{match.group(2)}"
 
         text = re.sub(pattern, repl, text)
+
+    # Override hpke-rs version (0.3.0 is yanked, use 0.4.0)
+    text = re.sub(r'hpke-rs\s*=\s*\{\s*version\s*=\s*"0\.3\.0"', 'hpke-rs = { version = "0.4.0"', text)
 
     manifest.write_text(text)
 
