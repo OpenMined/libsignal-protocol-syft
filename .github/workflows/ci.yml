@@ -16,11 +16,6 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Checkout spqr submodule to v1.2.0
-        run: |
-          cd third_party/spqr
-          git checkout v1.2.0
-
       - name: Install protoc
         uses: arduino/setup-protoc@v2
         with:
