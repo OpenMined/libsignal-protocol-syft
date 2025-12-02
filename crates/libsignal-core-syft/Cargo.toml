@@ -6,7 +6,7 @@
 [package]
 description = "Vendored libsignal core crate for syft"
 name = "libsignal-core-syft"
-version = "0.85.3-beta.4"
+version = "0.85.3-beta.5"
 repository = "https://github.com/OpenMined/libsignal-protocol-syft"
 homepage = "https://github.com/OpenMined/libsignal-protocol-syft"
 authors = ["Signal Messenger LLC"]

@@ -6,7 +6,7 @@
 [package]
 description = "Vendored libsignal crypto crate for syft"
 name = "signal-crypto-syft"
-version = "0.85.3-beta.4"
+version = "0.85.3-beta.5"
 repository = "https://github.com/OpenMined/libsignal-protocol-syft"
 homepage = "https://github.com/OpenMined/libsignal-protocol-syft"
 authors = ["Signal Messenger LLC"]
@@ -18,7 +18,7 @@ rust-version = "1.85"
 workspace = true
 
 [dependencies]
-libsignal-core = { version = "0.85.3-beta.4", package = "libsignal-core-syft", path = "../libsignal-core-syft" }
+libsignal-core = { version = "0.85.3-beta.5", package = "libsignal-core-syft", path = "../libsignal-core-syft" }
 
 aes = { version = "0.8.3", features = ["zeroize"] }
 cbc = { version = "0.1.2", features = ["std", "zeroize"] }
