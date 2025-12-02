@@ -7,10 +7,10 @@
 description = "Vendored libsignal core crate for syft"
 name = "libsignal-core-syft"
 version = "0.85.3-beta.4"
-repository.workspace = true
-homepage.workspace = true
-authors.workspace = true
-license.workspace = true
+repository = "https://github.com/OpenMined/libsignal-protocol-syft"
+homepage = "https://github.com/OpenMined/libsignal-protocol-syft"
+authors = ["Signal Messenger LLC"]
+license = "AGPL-3.0-only"
 edition = "2024"
 
 [lints]

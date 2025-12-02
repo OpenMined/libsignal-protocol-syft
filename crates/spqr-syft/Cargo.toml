@@ -2,8 +2,8 @@
 description = "Vendored spqr crate for syft"
 name = "spqr-syft"
 version = "0.85.3-beta.4"
-repository.workspace = true
-homepage.workspace = true
+repository = "https://github.com/OpenMined/libsignal-protocol-syft"
+homepage = "https://github.com/OpenMined/libsignal-protocol-syft"
 edition = "2021"
 license = "AGPL-3.0-only"
 rust-version = "1.83.0"
